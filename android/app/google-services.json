@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "681082286778",
+    "project_id": "quiz-making-app",
+    "storage_bucket": "quiz-making-app.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:681082286778:android:b2132351b74ac5a85a4883",
+        "android_client_info": {
+          "package_name": "com.example.chapter_3_statefull_widgets"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "681082286778-utjodfd57mugc2m6rnngh7b4e2ki0mmb.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBCbc4QuO_Wj3EfDptqbTRASQkMQjAFEEI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "681082286778-6j9p9m7pb149is88fc85rferrqlshknf.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "681082286778-30dqs1inmj4l2j54il26i2c5tqhrsqd7.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.chapter3StatefullWidgets.RunnerTests"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
