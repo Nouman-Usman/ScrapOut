@@ -3,6 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:get/utils.dart';
 
 import 'Login.dart';
 
@@ -18,16 +19,14 @@ class _SignUpPageState extends State<SignUpPage> {
   final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-  final TextEditingController _confirmPasswordController = TextEditingController();
+  final TextEditingController _confirmPasswordController =
+      TextEditingController();
   final TextEditingController _phoneController = TextEditingController();
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
   @override
   Widget build(BuildContext context) {
-    final width = MediaQuery
-        .of(context)
-        .size
-        .width;
+    final width = MediaQuery.of(context).size.width;
     return Scaffold(
       backgroundColor: Colors.white,
       body: SingleChildScrollView(
@@ -116,7 +115,7 @@ class _SignUpPageState extends State<SignUpPage> {
                                   border: InputBorder.none,
                                   hintText: "Username",
                                   hintStyle:
-                                  TextStyle(color: Colors.grey.shade700)),
+                                      TextStyle(color: Colors.grey.shade700)),
                             ),
                           ),
                           Container(
@@ -133,7 +132,7 @@ class _SignUpPageState extends State<SignUpPage> {
                                   border: InputBorder.none,
                                   hintText: "Email",
                                   hintStyle:
-                                  TextStyle(color: Colors.grey.shade700)),
+                                      TextStyle(color: Colors.grey.shade700)),
                             ),
                           ),
                           Container(
@@ -145,7 +144,7 @@ class _SignUpPageState extends State<SignUpPage> {
                                   border: InputBorder.none,
                                   hintText: "Password",
                                   hintStyle:
-                                  TextStyle(color: Colors.grey.shade700)),
+                                      TextStyle(color: Colors.grey.shade700)),
                             ),
                           ),
                           Container(
@@ -162,7 +161,7 @@ class _SignUpPageState extends State<SignUpPage> {
                                   border: InputBorder.none,
                                   hintText: "Confirm Password",
                                   hintStyle:
-                                  TextStyle(color: Colors.grey.shade700)),
+                                      TextStyle(color: Colors.grey.shade700)),
                             ),
                           ),
                           Container(
@@ -226,7 +225,7 @@ class _SignUpPageState extends State<SignUpPage> {
                                 border: InputBorder.none,
                                 hintText: "Enter Phone Number",
                                 hintStyle:
-                                TextStyle(color: Colors.grey.shade700),
+                                    TextStyle(color: Colors.grey.shade700),
                               ),
                             ),
                           )
@@ -270,10 +269,8 @@ class _SignUpPageState extends State<SignUpPage> {
                         ),
                         TextButton(
                           onPressed: () {
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (_) => HomePage()));
+                            Navigator.push(context,
+                                MaterialPageRoute(builder: (_) => HomePage()));
                           },
                           child: const Text(
                             "Login",
@@ -297,22 +294,26 @@ class _SignUpPageState extends State<SignUpPage> {
   Future<void> _register() async {
     String errorMessage = '';
     try {
-      if (_passwordController.text == _confirmPasswordController.text) {
-        UserCredential userCredential = await _auth.createUserWithEmailAndPassword(
+      if (_passwordController.text.trim() ==
+          _confirmPasswordController.text.trim()) {
+        UserCredential userCredential =
+            await _auth.createUserWithEmailAndPassword(
           email: _emailController.text.trim(),
           password: _passwordController.text.trim(),
         );
-        // await userCredential.user!.sendEmailVerification();
-        // await addUserToFirestore(
-        //   username: _usernameController.text,
-        //   role: selectedRole,
-        //   email: _emailController.text,
-        //   password: _passwordController.text,
-        //   phoneNumber: _phoneController.text,
-        // );
-          Navigator.push(context, MaterialPageRoute(builder: (_) => HomePage()));
-        }
-      else {
+        await userCredential.user!.sendEmailVerification();
+        _showErrorDialog('Verification has been sent to your Email','Attention');
+        String userId = userCredential.user!.uid;
+        await FirebaseFirestore.instance.collection('UserDetails').doc(userId).set({
+          'username': _usernameController.text.trim(),
+          'role': selectedRole,
+          'email': _emailController.text.trim(),
+          'password': _passwordController.text.trim(),
+          'phoneNumber': _phoneController.text.trim(),
+          // Add more fields as needed
+        });
+        Navigator.push(context, MaterialPageRoute(builder: (_) => HomePage()));
+      } else {
         errorMessage = "Password and Confirm Password is not same ";
       }
     } on FirebaseAuthException catch (e) {
@@ -323,19 +324,19 @@ class _SignUpPageState extends State<SignUpPage> {
       } else {
         errorMessage = 'An error occurred. Please try again later.';
       }
-      _showErrorDialog(errorMessage);
+      _showErrorDialog(errorMessage,'Error');
     } catch (e) {
       String errorMessage = 'An error occurred. Please try again later.';
-      _showErrorDialog(errorMessage);
+      _showErrorDialog(errorMessage,'Error');
     }
   }
 
-  void _showErrorDialog(String message) {
+  void _showErrorDialog(String message, String title1) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: const Text('Error'),
+          title: Text(title1),
           content: Text(message),
           actions: <Widget>[
             ElevatedButton(
@@ -383,6 +384,7 @@ class _PhoneNumberInputFormatter extends TextInputFormatter {
     return false;
   }
 }
+
 Future<void> addUserToFirestore({
   required String username,
   required String role,
@@ -393,16 +395,14 @@ Future<void> addUserToFirestore({
   try {
     // Create user in Firebase Authentication
     UserCredential userCredential = await FirebaseAuth.instance
-        .createUserWithEmailAndPassword(email: 'noumanmughal0123@gmail.com', password: 'RaimaNouman');
-
+        .createUserWithEmailAndPassword(email: email, password: password);
     // Get the user's UID
     String userId = userCredential.user!.uid;
-
-    // Add user information to Firestore
     await FirebaseFirestore.instance.collection('UserDetails').doc(userId).set({
       'username': username,
       'role': role,
       'email': email,
+      'password': password,
       'phoneNumber': phoneNumber,
       // Add more fields as needed
     });
@@ -411,3 +411,22 @@ Future<void> addUserToFirestore({
     throw e; // Throw the error to handle it in UI
   }
 }
+//   void _showVerificationDialog() {
+//     showDialog(
+//     context: context,
+//     builder: (BuildContext context) {
+//       return AlertDialog(
+//         title: Text('Verify your email'),
+//         content: Text('A verification link has been sent to your email. Please verify your email before logging in.'),
+//         actions: <Widget>[
+//           ElevatedButton(
+//             onPressed: () {
+//               Navigator.of(context).pop(); // Close dialog
+//             },
+//             child: Text('OK'),
+//           ),
+//         ],
+//       );
+//     },
+//   );
+// }

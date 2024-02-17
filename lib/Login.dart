@@ -19,12 +19,20 @@ class _HomePageState extends State<HomePage> {
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
   Future<void> _login() async {
+    User? user = _auth.currentUser;
     try {
-      UserCredential userCredential = await _auth.signInWithEmailAndPassword(
-        email: _usernameController.text.trim(),
-        password: _passwordController.text.trim(),
-      );
-      // Login successful, navigate to home screen or perform necessary action
+      if(user!= null && !user.emailVerified)
+        {
+          print(user.emailVerified);
+            // print('Email Not Verified');
+        }
+      else
+        {
+          UserCredential userCredential = await _auth.signInWithEmailAndPassword(
+              email: _usernameController.text.trim(),
+              password: _passwordController.text.trim(),
+          );
+        }
       Navigator.push(context, MaterialPageRoute(builder: (_) => OnBoarding()));
     } catch (e) {
       // Handle login errors
