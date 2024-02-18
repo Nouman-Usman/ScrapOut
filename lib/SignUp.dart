@@ -3,6 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/utils.dart';
 
 import 'Login.dart';
@@ -46,7 +47,7 @@ class _SignUpPageState extends State<SignUpPage> {
                       child: Container(
                         decoration: const BoxDecoration(
                             image: DecorationImage(
-                                image: AssetImage('images/background.png'),
+                                image: AssetImage('images/register.jpg'),
                                 fit: BoxFit.fill)),
                       ),
                     ),
@@ -59,7 +60,7 @@ class _SignUpPageState extends State<SignUpPage> {
                       child: Container(
                         decoration: const BoxDecoration(
                             image: DecorationImage(
-                                image: AssetImage('images/background-2.png'),
+                                image: AssetImage('images/register.jpg'),
                                 fit: BoxFit.fill)),
                       ),
                     ),
@@ -392,6 +393,7 @@ Future<void> addUserToFirestore({
   required String password,
   required String phoneNumber,
 }) async {
+  String errorMessage = '';
   try {
     // Create user in Firebase Authentication
     UserCredential userCredential = await FirebaseAuth.instance
@@ -407,26 +409,10 @@ Future<void> addUserToFirestore({
       // Add more fields as needed
     });
   } catch (e) {
-    print('Error adding user to Firestore: $e');
-    throw e; // Throw the error to handle it in UI
+    Fluttertoast.showToast(
+      msg: "Error Occurs $e",
+      toastLength: Toast.LENGTH_SHORT,
+      gravity: ToastGravity.BOTTOM,
+    );
   }
 }
-//   void _showVerificationDialog() {
-//     showDialog(
-//     context: context,
-//     builder: (BuildContext context) {
-//       return AlertDialog(
-//         title: Text('Verify your email'),
-//         content: Text('A verification link has been sent to your email. Please verify your email before logging in.'),
-//         actions: <Widget>[
-//           ElevatedButton(
-//             onPressed: () {
-//               Navigator.of(context).pop(); // Close dialog
-//             },
-//             child: Text('OK'),
-//           ),
-//         ],
-//       );
-//     },
-//   );
-// }

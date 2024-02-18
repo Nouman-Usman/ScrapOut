@@ -21,19 +21,24 @@ class _HomePageState extends State<HomePage> {
   Future<void> _login() async {
     User? user = _auth.currentUser;
     try {
-      if(user!= null && !user.emailVerified)
-        {
-          print(user.emailVerified);
-            // print('Email Not Verified');
-        }
-      else
-        {
-          UserCredential userCredential = await _auth.signInWithEmailAndPassword(
-              email: _usernameController.text.trim(),
-              password: _passwordController.text.trim(),
-          );
-        }
-      Navigator.push(context, MaterialPageRoute(builder: (_) => OnBoarding()));
+      if (user != null && !user.emailVerified) {
+        print(user.emailVerified);
+        print('Email Not Verified');
+        // Show a message to the user indicating that email is not verified
+        Fluttertoast.showToast(
+          msg: "Email not verified",
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.BOTTOM,
+        );
+        return; // Exit the function if email is not verified
+      } else {
+        UserCredential userCredential = await _auth.signInWithEmailAndPassword(
+          email: _usernameController.text.trim(),
+          password: _passwordController.text.trim(),
+        );
+        // Only navigate to the OnBoarding screen if sign-in is successful
+        Navigator.push(context, MaterialPageRoute(builder: (_) => OnBoarding()));
+      }
     } catch (e) {
       // Handle login errors
       Fluttertoast.showToast(
@@ -43,6 +48,7 @@ class _HomePageState extends State<HomePage> {
       );
     }
   }
+
 
   @override
   Widget build(BuildContext context) {
