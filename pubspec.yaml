@@ -1,4 +1,4 @@
-name: chapter_3_statefull_widgets
+name: Scrap_Out
 description: "Statefull widgets"
 # The following line prevents the package from being accidentally published to
 # pub.dev using `flutter pub publish`. This is preferred for private packages.
@@ -43,6 +43,7 @@ dependencies:
   lottie: ^3.0.0
   fluttertoast:
   firebase_core: ^2.4.1
+  random_string:
   cloud_firestore:
   firebase_auth:
 

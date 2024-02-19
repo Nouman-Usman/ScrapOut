@@ -1,4 +1,4 @@
-import 'package:chapter_3_statefull_widgets/content_model.dart';
+import 'package:Scrap_Out/content_model.dart';
 import 'package:flutter/material.dart';
 import 'package:animate_do/animate_do.dart';
 import 'Login.dart';
